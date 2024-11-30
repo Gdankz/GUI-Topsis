@@ -111,8 +111,13 @@ def hitung_topsis():
     hasil = sorted(zip(alternatif, skor), key=lambda x: x[1], reverse=True)
     hasil_text = "\n".join([f"{i+1}. {item[0]}: {item[1]:.4f}" for i, item in enumerate(hasil)])
 
+    # Menambahkan Rekomendasi
+    rekomendasi = f"\nRekomendasi: Prioritaskan {hasil[0][0]} untuk pengisian stok."
+
+    #gabungan hasil peringkat dan rekomendasi 
+    output = f"Peringkat:\n{hasil_text}{rekomendasi}"
     # Buka GUI Hasil
-    buka_hasil_topsis(hasil_text)
+    buka_hasil_topsis(output)
 
 # GUI Tkinter
 root = tk.Tk()
