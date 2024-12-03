@@ -18,6 +18,7 @@ def tambah_produk():
         harga = (entry_harga.get())
         garansi = float(entry_garansi.get())
         permintaan = float(entry_permintaan.get())
+        #safe_stok=float(entry_safety_stok.get())
 
         if not nama:
             raise ValueError("Nama produk tidak boleh kosong!")
@@ -35,7 +36,8 @@ def tambah_produk():
         entry_harga.delete(0, tk.END)
         entry_garansi.delete(0, tk.END)
         entry_permintaan.delete(0, tk.END)
-
+        #entry_safety_stok.delete(0, tk.END)
+        
     except ValueError as e:
         messagebox.showerror("Error", f"Input tidak valid: {e}")
 
@@ -75,6 +77,8 @@ def center_window(window, width, height):
     position_left = int(screen_width / 2 - width / 2)
     
 # Fungsi untuk Membuka GUI Hasil TOPSIS
+
+        
 def buka_hasil_topsis(hasil):
     root.withdraw()
     # GUI Baru untuk Hasil
@@ -108,11 +112,36 @@ def buka_hasil_topsis(hasil):
     
     rekomendasi_tertinggi = hasil[0][0]
 
+    '''# test
+    permintaan_bulanan = entry_permintaan.get().strip()  # Mengambil input permintaan bulanan
+    lead_time =3 # Mengambil input lead time
+    safety_stock = entry_safety_stok.get().strip()  # Mengambil input safety stock
+
+        # Cek apakah input kosong
+    if not permintaan_bulanan or not lead_time or not safety_stock:
+        messagebox.showerror("Error", "Inputan permintaan bulanan, lead time, dan safety stock harus diisi!")
+
+
+    # Konversi input menjadi float jika tidak kosong
+    permintaan_bulanan = float(permintaan_bulanan)  
+    lead_time = float(lead_time)  
+    safety_stock = float(safety_stock)  
+
+    # Menghitung permintaan harian
+    permintaan_harian = permintaan_bulanan / 30  # Asumsi bulan 30 hari
+
+    # Menghitung Reorder Point (ROP)
+    rop = (permintaan_harian * lead_time) + safety_stock
+        
+    
     # Menambahkan Data ke Tabel
     for i, (nama, skor) in enumerate(hasil, start=1):
-        rekomendasi = "Prioritaskan untuk diberikan pengisian stok" if nama == rekomendasi_tertinggi else "Lakukan Pengisian Stok secara normal"
+        rekomendasi = "Re-Stok lebih dari {} unit".format(entry_safety_stok.get) if nama == rekomendasi_tertinggi else "Re-Stok Normal ( {} unit)".format(entry_safety_stok.get)
         tree.insert("", "end", values=(i, nama, f"{skor:.4f}", rekomendasi))
-
+        '''
+    for i, (nama, skor) in enumerate(hasil, start=1):
+        rekomendasi = "Re-Stok ditingkatkan" if nama == rekomendasi_tertinggi else "Re-Stok Normal"
+        tree.insert("", "end", values=(i, nama, f"{skor:.4f}", rekomendasi))
     # Frame Tombol
     frame_buttons = tk.Frame(hasil_window)
     frame_buttons.pack(pady=10)
@@ -232,6 +261,10 @@ tk.Label(frame_input, text="Permintaan (Unit/Bulan):").pack(anchor="w", pady=5)
 entry_permintaan = ttk.Entry(frame_input, width=30, validate="key", validatecommand=vcmd)
 entry_permintaan.pack(pady=5)
 
+'''tk.Label(frame_input, text="Safety Stok").pack(anchor="w", pady=5)
+entry_safety_stok = ttk.Entry(frame_input, width=30, validate="key", validatecommand=vcmd)
+entry_safety_stok.pack(pady=5)'''
+
 # Tombol untuk tambah produk
 btn_tambah = ttk.Button(frame_input, text="Tambah", command=tambah_produk)
 btn_tambah.pack(pady=10)
@@ -241,6 +274,8 @@ frame_list = tk.Frame(root, padx=20, pady=20)
 frame_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
 # Membuat Treeview untuk menampilkan tabel produk
+'''tree = ttk.Treeview(frame_list, columns=("Nama", "Pencahayaan", "Lifetime", "Harga", "Garansi", "Permintaan","Safety Stock"), show="headings")
+    tree.pack(fill="both", expand=True)'''
 tree = ttk.Treeview(frame_list, columns=("Nama", "Pencahayaan", "Lifetime", "Harga", "Garansi", "Permintaan"), show="headings")
 tree.pack(fill="both", expand=True)
 
@@ -251,6 +286,7 @@ tree.heading("Lifetime", text="Lifetime")
 tree.heading("Harga", text="Harga")
 tree.heading("Garansi", text="Garansi")
 tree.heading("Permintaan", text="Permintaan")
+#tree.heading("Safety Stock", text="Safety Stock")
 
 # Atur lebar kolom
 tree.column("Nama", width=150, anchor="center")
@@ -259,6 +295,7 @@ tree.column("Lifetime", width=100, anchor="center")
 tree.column("Harga", width=100, anchor="center")
 tree.column("Garansi", width=100, anchor="center")
 tree.column("Permintaan", width=100, anchor="center")
+#tree.column("Safety Stock", width=100, anchor="center")
 
 # Tombol Hitung TOPSIS
 btn_hitung = ttk.Button(frame_list, text="Hitung Rekomendasi", command=hitung_topsis)
@@ -303,6 +340,9 @@ def baru():
     entry_permintaan = ttk.Entry(frame_input, width=30, validate="key", validatecommand=vcmd)
     entry_permintaan.pack(pady=5)
 
+    tk.Label(frame_input, text="Safety Stok").pack(anchor="w", pady=5)
+    entry_safety_stok = ttk.Entry(frame_input, width=30, validate="key", validatecommand=vcmd)
+    entry_safety_stok.pack(pady=5) 
     # Tombol untuk tambah produk
     btn_tambah = ttk.Button(frame_input, text="Tambah", command=tambah_produk)
     btn_tambah.pack(pady=10)
@@ -312,6 +352,8 @@ def baru():
     frame_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
 
     # Membuat Treeview untuk menampilkan tabel produk
+    '''tree = ttk.Treeview(frame_list, columns=("Nama", "Pencahayaan", "Lifetime", "Harga", "Garansi", "Permintaan","Safety Stock"), show="headings")
+    tree.pack(fill="both", expand=True)'''
     tree = ttk.Treeview(frame_list, columns=("Nama", "Pencahayaan", "Lifetime", "Harga", "Garansi", "Permintaan"), show="headings")
     tree.pack(fill="both", expand=True)
 
@@ -322,6 +364,7 @@ def baru():
     tree.heading("Harga", text="Harga")
     tree.heading("Garansi", text="Garansi")
     tree.heading("Permintaan", text="Permintaan")
+    #tree.heading("Safety Stock", text="Safety Stock")
 
     # Atur lebar kolom
     tree.column("Nama", width=150, anchor="center")
@@ -330,6 +373,7 @@ def baru():
     tree.column("Harga", width=100, anchor="center")
     tree.column("Garansi", width=100, anchor="center")
     tree.column("Permintaan", width=100, anchor="center")
+   #tree.column("Safety Stock", width=100, anchor="center")
 
     # Tombol Hitung TOPSIS
     btn_hitung = ttk.Button(frame_list, text="Hitung Rekomendasi", command=hitung_topsis)
