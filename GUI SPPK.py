@@ -35,25 +35,42 @@ def tambah_produk():
 
     except ValueError as e:
         messagebox.showerror("Error", f"Input tidak valid: {e}")
+#fungsi untuk mengatur posisi window
+def center_window(window, width, height):
+    # Mendapatkan ukuran layar
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    # Menghitung posisi untuk menempatkan jendela di tengah
+    position_top = int(screen_height / 2 - height / 2)
+    position_left = int(screen_width / 2 - width / 2)
+    
 # Fungsi untuk Membuka GUI Hasil TOPSIS
 def buka_hasil_topsis(hasil):
+    root.withdraw()
     # GUI Baru untuk Hasil
     hasil_window = tk.Toplevel(root)
     hasil_window.title("Hasil TOPSIS")
 
-    # Hitung ukuran hasil untuk menyesuaikan ukuran window
+     # Tentukan ukuran jendela hasil (misalnya lebar 1000, tinggi 600)
+    fixed_width = 1000  # Lebar tetap
+    fixed_height = 600  # Tinggi tetap
+
+    # Hitung ukuran hasil untuk menyesuaikan ukuran konten
     max_line_length = max(len(line) for line in hasil.split("\n"))
     num_lines = len(hasil.split("\n"))
-    window_width = min(600, max_line_length * 8)  # Atur lebar maksimum
-    window_height = min(400, num_lines * 25 + 100)  # Atur tinggi berdasarkan jumlah baris
-    hasil_window.geometry(f"{window_width}x{window_height}")
+    dynamic_width = max(fixed_width, max_line_length * 10)  # Sesuaikan lebar minimum
+    dynamic_height = max(fixed_height, num_lines * 20 + 100)  # 
+    
+    center_window(hasil_window, dynamic_width, dynamic_height)
 
     # Teks Hasil
     tk.Label(hasil_window, text="Hasil Peringkat TOPSIS", font=("Arial", 14)).pack(pady=10)
     hasil_text = tk.Text(hasil_window, wrap=tk.WORD, font=("Arial", 12))
     hasil_text.pack(pady=10, fill=tk.BOTH, expand=True, padx=10)
     hasil_text.insert(tk.END, hasil)
-    hasil_text.config(state="disabled")  # Tidak bisa diedit
+    hasil_text.config(state="disabled") # Tidak bisa diedit
+    
 
     # Frame Tombol
     frame_buttons = tk.Frame(hasil_window)
@@ -65,12 +82,17 @@ def buka_hasil_topsis(hasil):
         data_produk.clear()  # Hapus semua data produk
         listbox_produk.delete(0, tk.END)  # Kosongkan Listbox
         hasil_window.destroy()  # Tutup jendela hasil
+        root.deiconify()  # Munculkan kembali jendela utama
 
     btn_ulang = ttk.Button(frame_buttons, text="Ulangi", command=ulangi)
     btn_ulang.grid(row=0, column=0, padx=10)
 
     # Tombol Exit
-    btn_exit = ttk.Button(frame_buttons, text="Exit", command=root.destroy)
+    def keluar():
+        hasil_window.destroy()  # Tutup jendela hasil
+        root.destroy()  # Tutup aplikasi utama
+
+    btn_exit = ttk.Button(frame_buttons, text="Exit", command=keluar)
     btn_exit.grid(row=0, column=1, padx=10)
 
 # Fungsi untuk Menghitung TOPSIS
@@ -111,13 +133,19 @@ def hitung_topsis():
     hasil = sorted(zip(alternatif, skor), key=lambda x: x[1], reverse=True)
     hasil_text = "\n".join([f"{i+1}. {item[0]}: {item[1]:.4f}" for i, item in enumerate(hasil)])
 
+    # Menambahkan Rekomendasi
+    rekomendasi = f"\nRekomendasi: Prioritaskan {hasil[0][0]} untuk pengisian stok."
+
+    #gabungan hasil peringkat dan rekomendasi 
+    output = f"Peringkat:\n{hasil_text}{rekomendasi}"
     # Buka GUI Hasil
-    buka_hasil_topsis(hasil_text)
+    buka_hasil_topsis(output)
 
 # GUI Tkinter
 root = tk.Tk()
 root.title("Aplikasi TOPSIS")
 root.geometry("800x600")
+center_window(root,800,600)
 
 # Frame untuk Input Data
 frame_input = tk.Frame(root, padx=10, pady=10)
