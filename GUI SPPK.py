@@ -340,9 +340,9 @@ def baru():
     entry_permintaan = ttk.Entry(frame_input, width=30, validate="key", validatecommand=vcmd)
     entry_permintaan.pack(pady=5)
 
-    tk.Label(frame_input, text="Safety Stok").pack(anchor="w", pady=5)
+    '''tk.Label(frame_input, text="Safety Stok").pack(anchor="w", pady=5)
     entry_safety_stok = ttk.Entry(frame_input, width=30, validate="key", validatecommand=vcmd)
-    entry_safety_stok.pack(pady=5) 
+    entry_safety_stok.pack(pady=5)''' 
     # Tombol untuk tambah produk
     btn_tambah = ttk.Button(frame_input, text="Tambah", command=tambah_produk)
     btn_tambah.pack(pady=10)
